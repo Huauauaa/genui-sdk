@@ -38,7 +38,7 @@ export function useSchemaRendererInspect(options: {
     if (!options.isDevMode.value || !isSelectable() || !options.schema.value) {
       return false;
     }
-    return Boolean(findInspectableElement(target)?.dataset.id);
+    return Boolean(findInspectableElement(target));
   };
 
   const updateHighlight = () => {
@@ -98,7 +98,7 @@ export function useSchemaRendererInspect(options: {
       return;
     }
     const el = findInspectableElement(event.target);
-    if (!el?.dataset.id) {
+    if (!el) {
       return;
     }
     const node = selectedNodeFromSchemaById(options.schema.value, el.dataset.id);
@@ -125,10 +125,8 @@ export function useSchemaRendererInspect(options: {
     event.stopPropagation();
   };
 
-  const onMouseUp = (event: MouseEvent) => blockInteraction(event);
-  const onClick = (event: MouseEvent) => blockInteraction(event);
-  const onDoubleClick = (event: MouseEvent) => blockInteraction(event);
-  const onPointerUp = (event: PointerEvent) => blockInteraction(event);
+  // mouseup/click/dblclick/pointerup 均只需 stopPropagation + preventDefault，共用同一处理器
+  const onBlock = (event: Event) => blockInteraction(event);
   const onKeyDown = (event: KeyboardEvent) => blockInteraction(event, event.key !== 'Tab');
   const onPointerDown = (event: PointerEvent) => blockInteraction(event, false);
 
@@ -179,11 +177,8 @@ export function useSchemaRendererInspect(options: {
     onMouseMove,
     onMouseLeave,
     onMouseDown,
-    onMouseUp,
-    onClick,
-    onDoubleClick,
+    onBlock,
     onPointerDown,
-    onPointerUp,
     onKeyDown,
   };
 }

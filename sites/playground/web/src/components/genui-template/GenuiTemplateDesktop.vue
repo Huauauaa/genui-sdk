@@ -68,11 +68,8 @@ const {
   onMouseMove: handleRendererMouseMove,
   onMouseLeave: handleRendererMouseLeave,
   onMouseDown: handleRendererMouseDown,
-  onMouseUp: handleRendererMouseUp,
-  onClick: handleRendererInspectClick,
-  onDoubleClick: handleRendererDoubleClick,
+  onBlock: handleRendererBlock,
   onPointerDown: handleRendererPointerDown,
-  onPointerUp: handleRendererPointerUp,
   onKeyDown: handleRendererKeyDown,
 } = useSchemaRendererInspect({
   isDevMode,
@@ -132,11 +129,11 @@ const {
             @mousemove="handleRendererMouseMove"
             @mouseleave="handleRendererMouseLeave"
             @mousedown.capture="handleRendererMouseDown"
-            @mouseup.capture="handleRendererMouseUp"
-            @click.capture="handleRendererInspectClick"
-            @dblclick.capture="handleRendererDoubleClick"
+            @mouseup.capture="handleRendererBlock"
+            @click.capture="handleRendererBlock"
+            @dblclick.capture="handleRendererBlock"
             @pointerdown.capture="handleRendererPointerDown"
-            @pointerup.capture="handleRendererPointerUp"
+            @pointerup.capture="handleRendererBlock"
             @keydown.capture="handleRendererKeyDown"
           >
             <schema-renderer
