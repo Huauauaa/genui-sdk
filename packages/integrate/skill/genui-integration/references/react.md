@@ -46,8 +46,12 @@ const customActions = {
   openPage: {
     name: 'openPage',
     description: '打开新页面',
-    execute: (params: { url: string; target?: string }) => {
-      const { url, target = '_self' } = params;
+    execute: (params?: { url?: string; target?: string }) => {
+      const { url, target = '_self' } = params ?? {};
+      if (!url) {
+        console.warn('[openPage] missing required param "url", call ignored');
+        return;
+      }
       window.open(url, target);
     },
     parameters: {
