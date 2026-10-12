@@ -77,6 +77,8 @@ export function useSchemaRendererInspect(options: {
     if (!options.isDevMode.value || !isSelectable()) {
       return;
     }
+    // 捕获阶段拦截移动事件，阻止组件内部 onMousemove/onPointermove 触发模板动作
+    blockInteraction(event, false);
     const el = findInspectableElement(event.target);
     if (el !== selectedEl) {
       selectedEl = null;

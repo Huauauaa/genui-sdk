@@ -126,7 +126,8 @@ const {
               'schema-renderer',
               { 'is-inspectable': isDevMode, 'is-inspect-locked': isDevMode && !inspectSelectable },
             ]"
-            @mousemove="handleRendererMouseMove"
+            @mousemove.capture="handleRendererMouseMove"
+            @pointermove.capture="handleRendererMouseMove"
             @mouseleave="handleRendererMouseLeave"
             @mousedown.capture="handleRendererMouseDown"
             @mouseup.capture="handleRendererBlock"
