@@ -608,19 +608,6 @@ onUnmounted(() => {
   width: 100%;
 }
 
-:deep(.tr-bubble__content-wrapper) {
-  @avatar-and-gap-width: 56px;
-  max-width: calc(100% - @avatar-and-gap-width * 2);
-
-  .tr-bubble__content {
-    max-width: 100%;
-  }
-
-  .tr-bubble__content-items {
-    overflow-x: auto;
-  }
-}
-
 @media (max-width: 768px) {
   :deep(.tr-bubble__content-wrapper) {
     max-width: calc(100% - 12px);
