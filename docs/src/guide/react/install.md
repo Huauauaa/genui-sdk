@@ -46,6 +46,8 @@ export function App({ schema }: { schema: string | Record<string, unknown> }) {
 }
 ```
 
+> 若后端使用 `genui-sdk-server`，服务端还须显式传入本物料包的 `materialsMeta`（`@opentiny/genui-sdk-materials-react-antd/meta`）——服务端内置默认物料只覆盖 Vue / Angular，前端一旦使用其他物料（React、Element Plus、mini 精简集、自定义物料等）都必须显式传入，否则会回落到 Vue 默认物料。详见 [Server 包使用文档](../server-usage)。
+
 ## 按需引入
 
 `@opentiny/genui-sdk-react` 除主入口外，还提供按功能拆分的子路径导出：

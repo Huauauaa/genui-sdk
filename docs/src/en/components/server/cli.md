@@ -36,6 +36,8 @@ On success, the server address is printed, for example:
 genui-sdk-server is running on http://localhost:3100
 ```
 
+> **Materials note**: the CLI exposes no materials option and **can only use the server's built-in default materials** (`Vue` → OpenTiny Vue, `Angular` → OpenTiny Angular). As soon as the frontend replaces its materials (React materials, Vue Element Plus, the mini set, custom materials, etc.), the server falls back to the Vue default and the generated schema component names will not match the frontend; in that case you must switch to programmatic startup or Express integration and pass the matching `materialsMeta` explicitly. See [Server Usage - Materials configuration](../../guide/server-usage).
+
 ## Commands
 
 ### genui-sdk-server

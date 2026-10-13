@@ -36,6 +36,8 @@ genui-sdk-server
 genui-sdk-server is running on http://localhost:3100
 ```
 
+> **物料说明**：CLI 不提供物料参数，**只能使用服务端内置默认物料**（`Vue` → OpenTiny Vue，`Angular` → OpenTiny Angular）。只要前端替换了物料（React 物料、Vue Element Plus、mini 精简集、自定义物料等），服务端就会回落到 Vue 默认物料，生成 schema 的组件名与前端不匹配；此时必须改用编程方式或 Express 集成，显式传入对应的 `materialsMeta`。详见 [Server 使用文档 - 物料配置](../../guide/server-usage)。
+
 ## 命令
 
 ### genui-sdk-server
