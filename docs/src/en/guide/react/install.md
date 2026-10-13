@@ -47,7 +47,7 @@ export function App({ schema }: { schema: string | Record<string, unknown> }) {
 }
 ```
 
-> If the backend uses `genui-sdk-server`, the server must also be passed this package's `materialsMeta` (`@opentiny/genui-sdk-materials-react-antd/meta`) explicitly — the server's built-in defaults only cover Vue / Angular; any other frontend materials (React, Element Plus, the mini set, custom materials, etc.) must be passed explicitly, otherwise they fall back to the Vue default. See [Server Usage](../server-usage).
+> If the backend uses `genui-sdk-server`, the server must also be passed this package's `materialsMeta` (`@opentiny/genui-sdk-materials-react-antd/meta`) explicitly — without it, the server only uses the built-in default selected by `framework` (Vue → OpenTiny Vue, Angular → OpenTiny Angular). Any other frontend materials (React, Element Plus, the mini set, custom materials, etc.) must be passed explicitly, otherwise the server's default materials will not match the frontend. See [Server Usage](../server-usage).
 
 ## Subpath imports
 
