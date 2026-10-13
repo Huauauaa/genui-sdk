@@ -10,6 +10,7 @@ import {
   Switch,
   Table,
 } from 'antd';
+import { Area, Bar, Column, Line, Pie, Radar } from '@ant-design/charts';
 import type { IMaterialsMap } from '@opentiny/genui-sdk-core';
 
 import { AntTabsWrap } from './AntTabsWrap';
@@ -31,4 +32,10 @@ export const components: IMaterialsMap = {
   AntCheckbox: Checkbox,
   AntRadio: Radio,
   AntDatePicker,
+  AntBar: Bar,
+  AntColumn: Column,
+  AntLine: Line,
+  AntArea: Area,
+  AntRadar: Radar,
+  AntPie: Pie,
 };
