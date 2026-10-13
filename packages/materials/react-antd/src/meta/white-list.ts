@@ -15,6 +15,7 @@ export const whiteList = [
   'p',
   'Text',
   'AntButton',
+  'AntIcon',
   'AntInput',
   'AntSelect',
   'AntForm',

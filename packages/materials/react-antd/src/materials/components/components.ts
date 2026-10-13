@@ -14,9 +14,11 @@ import type { IMaterialsMap } from '@opentiny/genui-sdk-core';
 
 import { AntTabsWrap } from './AntTabsWrap';
 import { AntDatePicker } from './AntDatePickerWrap';
+import { AntIcon } from './AntIcon';
 
 export const components: IMaterialsMap = {
   AntButton: Button,
+  AntIcon,
   AntInput: Input,
   AntSelect: Select,
   AntForm: Form,
