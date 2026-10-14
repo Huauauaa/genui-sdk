@@ -236,7 +236,7 @@ const {
     .schema-inspect-overlay {
       position: absolute;
       inset: 0;
-      z-index: 30;
+      z-index: 10;
       overflow: hidden;
       pointer-events: none;
     }
