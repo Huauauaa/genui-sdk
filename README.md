@@ -31,11 +31,11 @@ If you want to use GenUI SDK in your own project, please refer to the
 
 ## Packages
 
-The repository publishes the following packages. All frontend packages share the same schema protocol and differ only in framework and component library.
+The repository publishes the following packages. They share the same schema protocol and materials system, and each frontend package provides framework-specific APIs.
 
 | Layer         | Package                                                  | Framework   | Docs                                                                                  | Description                                                                                                             |
 | ------------- | -------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Core          | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | Agnostic    | [Docs](https://docs.opentiny.design/genui-sdk/components/core/api)                     | Protocol types, prompt generation, streaming Markdown and SchemaJson extraction, delta patching and JSON repair. Required by all others. |
+| Core          | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | Agnostic    | [Docs](https://docs.opentiny.design/genui-sdk/components/core/api)                     | Protocol types, prompt generation, streaming Markdown and SchemaJson extraction, delta patching and JSON repair. Required by most other packages. |
 | Frontend      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue   | [Docs](https://docs.opentiny.design/genui-sdk/guide/quick-start)                       | `GenuiChat`, `GenuiRenderer`, `GenuiConfigProvider` and `generateCode` for Vue applications.                          |
 | Frontend      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/guide/react/install)                 | `GenuiRenderer` and `GenuiConfigProvider` for React applications.                                                 |
 | Frontend      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | [Docs](https://docs.opentiny.design/genui-sdk/guide/angular/install)             | `GenuiRenderer` and `GenuiConfigProvider` for Angular applications.                                           |
