@@ -47,10 +47,12 @@ export interface BenchmarkComparisonRow {
       avgFirstTextMs?: number;
       /** 首个 TinyCard 节点出现耗时（ms）均值 */
       avgFirstObservableComponentMs?: number;
-      avgTotalMs: number;
+      /** 全失败组（runs 为 0）时为 null，其余为均值 */
+      avgTotalMs: number | null;
       /** 有 TPOT 的 run 上取均值；全无则为 undefined */
       avgTpotMs?: number;
-      avgTotalTokens: number;
+      /** 全失败组（runs 为 0）时为 null，其余为均值 */
+      avgTotalTokens: number | null;
       schemaPassRate: number;
       distributions?: {
         firstChunkMs?: DistributionStats;
@@ -121,7 +123,6 @@ export function buildComparisonByScenario(
       const successful = mr.filter((r) => r.requestFailed !== true);
       const n = successful.length;
       const totalRuns = mr.length;
-      if (n === 0) continue;
       const tpotValues = successful.map((r) => r.tpotMs).filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
       const ttftSeries = numberSeries(successful.map((r) => r.ttftMs));
       const firstChunkSeries = numberSeries(successful.map((r) => r.firstChunkMs ?? r.ttftMs));
@@ -169,9 +170,9 @@ export function buildComparisonByScenario(
         ...(avgFirstChunk != null ? { avgFirstChunkMs: avgFirstChunk } : {}),
         ...(avgFirstText != null ? { avgFirstTextMs: avgFirstText } : {}),
         ...(avgTinyCard != null ? { avgFirstObservableComponentMs: avgTinyCard } : {}),
-        avgTotalMs: successful.reduce((s, r) => s + r.totalMs, 0) / n,
+        avgTotalMs: n === 0 ? null : successful.reduce((s, r) => s + r.totalMs, 0) / n,
         ...(tpotValues.length ? { avgTpotMs: tpotValues.reduce((s, v) => s + v, 0) / tpotValues.length } : {}),
-        avgTotalTokens: successful.reduce((s, r) => s + r.totalTokens, 0) / n,
+        avgTotalTokens: n === 0 ? null : successful.reduce((s, r) => s + r.totalTokens, 0) / n,
         // plain 不计入协议门禁；整组皆 plain 时视为无协议期望（vacuous 1）
         schemaPassRate: (() => {
           const scored = mr.filter(countsTowardProtocolGate);
@@ -244,9 +245,9 @@ function writeReportXlsx(
         avgFirstChunkMs: c.avgFirstChunkMs ?? '',
         avgFirstTextMs: c.avgFirstTextMs ?? '',
         avgFirstObservableComponentMs: c.avgFirstObservableComponentMs ?? '',
-        avgTotalMs: c.avgTotalMs,
+        avgTotalMs: c.avgTotalMs ?? '',
         avgTpotMs: c.avgTpotMs ?? '',
-        avgTotalTokens: c.avgTotalTokens,
+        avgTotalTokens: c.avgTotalTokens ?? '',
         schemaPassRate: c.schemaPassRate,
       };
       if (c.volatility) {

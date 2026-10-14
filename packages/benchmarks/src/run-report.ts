@@ -231,7 +231,8 @@ function toReportItem(
 /**
  * 读取样本目录并输出统计报告。
  * @param options 运行配置（用于过滤 scenario/scenarios 与 models）
- * @returns 输出打印与写盘后的结果集
+ * @returns `{ results, gateFailed }`：results 为输出打印与写盘后的结果集；
+ *   gateFailed 为 `failOnProtocol` 门槛失败标记（由调用方决定退出码，避免库函数副作用）。
  */
 export async function runReport(options: LlmBenchmarkRunOptions) {
   const baseDir = resolveSamplesDir(options.samplesDir);
@@ -355,12 +356,14 @@ export async function runReport(options: LlmBenchmarkRunOptions) {
     );
   }
   const health = buildBenchmarkHealthSummary(results);
+  let gateFailed = false;
   if (options.failOnProtocol && health.endToEndSuccessRate < 1) {
-    process.exitCode = 1;
+    gateFailed = true;
     console.error(
       `[bench][gate] failed: endToEndSuccessRate=${health.endToEndSuccessRate.toFixed(4)} ` +
         `(${health.protocolPassedRows}/${health.protocolRows})`,
     );
   }
-  return await printLlmBenchmarkResults(results, options, parsedSamples);
+  const printed = await printLlmBenchmarkResults(results, options, parsedSamples);
+  return { results: printed, gateFailed };
 }

@@ -86,7 +86,21 @@ export function describeMissingA2uiJsonBlock(output: string): string {
 /**
  * 流式「首个可观测 UI」近似：规范要求定义 `id: root` 后客户端才开始 progressive render。
  * （`createSurface` / 仅出现 `updateComponents` 键时尚无可见组件。）
+ * 仅在 `<a2ui-json>` 块（含最后一个未闭合块）内部检查，避免输出文本别处
+ * 出现 `"id": "root"` 造成误判。
  */
 export function hasA2uiFirstObservableMessage(text: string): boolean {
-  return /"id"\s*:\s*"root"/.test(text);
+  const { blocks, unclosed } = extractAllA2uiJsonBlocks(text);
+  if (blocks.some((b) => /"id"\s*:\s*"root"/.test(b))) {
+    return true;
+  }
+  if (unclosed) {
+    const matches = [...text.matchAll(/<a2ui-json>/gi)];
+    const last = matches[matches.length - 1];
+    if (last && last.index != null) {
+      const tail = text.slice(last.index + last[0].length);
+      return /"id"\s*:\s*"root"/.test(tail);
+    }
+  }
+  return false;
 }

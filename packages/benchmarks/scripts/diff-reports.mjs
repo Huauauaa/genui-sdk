@@ -99,7 +99,7 @@ export function diffBenchmarkReports(baseline, current) {
         baseline.healthSummary?.endToEndSuccessRate,
       ),
     },
-    rows,
+    rows: comparable ? rows : [],
     regressions: comparable ? rows.filter((row) => row.regression) : [],
   };
 }

@@ -28,12 +28,15 @@ async function runCli() {
   const benchmarkStartedAtMs = Date.now();
   const options = resolveRunOptions();
   const gen = await generateSamples(options);
-  await runReport({
+  const report = await runReport({
     ...options,
     benchmarkStartedAtMs,
     samplesDir: gen.samplesDir,
     runMetadata: gen.runMetadata,
   });
+  if (report.gateFailed) {
+    process.exit(1);
+  }
 }
 
 async function main() {

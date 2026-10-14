@@ -112,12 +112,38 @@ function findFreePort(preferred: number): Promise<number> {
   });
 }
 
+const MAX_REQUEST_BODY_BYTES = 10 * 1024 * 1024; // 10MB
+
 function readBody(req: http.IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    req.on('data', (c) => chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c)));
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    req.on('error', reject);
+    let size = 0;
+    let rejected = false;
+    const declared = Number(req.headers['content-length']);
+    if (Number.isFinite(declared) && declared > MAX_REQUEST_BODY_BYTES) {
+      reject(new Error(`Request body too large (${declared} bytes)`));
+      return;
+    }
+    req.on('data', (c) => {
+      if (rejected) return;
+      const buf = Buffer.isBuffer(c) ? c : Buffer.from(c);
+      size += buf.length;
+      if (size > MAX_REQUEST_BODY_BYTES) {
+        rejected = true;
+        reject(new Error('Request body too large'));
+        return;
+      }
+      chunks.push(buf);
+    });
+    req.on('end', () => {
+      if (rejected) return;
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+    req.on('error', (err) => {
+      if (rejected) return;
+      rejected = true;
+      reject(err);
+    });
   });
 }
 
@@ -383,9 +409,22 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
         try {
           const raw = await readBody(req);
           form = JSON.parse(raw || '{}') as BenchUiFormPayload;
-        } catch {
+        } catch (err) {
           releaseReservation();
-          sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+          const tooLarge = err instanceof Error && err.message.includes('too large');
+          sendJson(res, tooLarge ? 413 : 400, {
+            ok: false,
+            error: tooLarge ? 'Request body too large' : 'Invalid JSON body',
+          });
+          if (tooLarge) {
+            // 先发送 413，再销毁连接，停止消费超限的剩余 body。
+            req.destroy();
+          }
+          return;
+        }
+        if (reservationReleased) {
+          // 客户端在 body 读取期间断开：预约已放回 idle，且响应 socket 已关闭，
+          // 不能再带着该预约启动 benchmark，避免与后续新请求叠跑。
           return;
         }
         sendJson(res, 202, { ok: true, message: 'Benchmark started' });
