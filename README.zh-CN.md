@@ -26,19 +26,19 @@ GenUI SDK 是 OpenTiny 面向生成式 UI（Generative UI）场景的全栈开�
 
 ## 包总览
 
-| 分层      | 包名                                                     | 框架       | 说明                                                                                              |
-| --------- | -------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| 内核      | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | 通用       | 协议类型、Prompt 生成、流式Markdown和SchemaJson提取、增量补丁、JSON 修复，被其余所有包依赖。                   |
-| 前端      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue | 提供 `GenuiChat`、`GenuiRenderer`、`GenuiConfigProvider` 与 `generateCode`。                      |
-| 前端      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | 提供 `GenuiRenderer` 与 `GenuiConfigProvider`。                                             |
-| 前端      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | 提供 `GenuiRenderer` 与 `GenuiConfigProvider`。                                         |
-| 物料      | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | Vue | 基于 [OpenTiny Vue](https://opentiny.design/tiny-vue/) 的组件映射与 Prompt 元数据。 |
-| 物料      | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Vue | 基于 [Element Plus](https://element-plus.org/) 的组件映射与 Prompt 元数据。         |
-| 物料      | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | 基于 [Ant Design](https://ant.design/) 的组件映射与 Prompt 元数据。             |
-| 物料      | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | Angular | 基于 [OpenTiny NG](https://opentiny.design/tiny-ng/) 的组件映射与 Prompt 元数据。 |
-| 服务端    | [`@opentiny/genui-sdk-server`](packages/server/README.md) | Node.js    | OpenAI 兼容的 Chat Completions 服务，注入物料元数据并流式输出 SchemaJson。                            |
-| AI 工具   | [`@opentiny/genui-sdk-skill-generator`](packages/skill-generator/README.md) | Node.js | 根据 `genPrompt` 输出生成 Agent Skill（Cursor / Claude Code 等）。                |
-| AI 工具   | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | 指导 AI 助手集成 GenUI SDK（Vue / React / Angular / Server）的 Skill。             |
+| 分层      | 包名                                                     | 框架       | 文档                                                                                  | 说明                                                                                              |
+| --------- | -------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 内核      | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | 通用       | [文档](https://docs.opentiny.design/genui-sdk/components/core/api)                     | 协议类型、Prompt 生成、流式Markdown和SchemaJson提取、增量补丁、JSON 修复，被其余所有包依赖。                   |
+| 前端      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue | [文档](https://docs.opentiny.design/genui-sdk/guide/quick-start)                       | 提供 `GenuiChat`、`GenuiRenderer`、`GenuiConfigProvider` 与 `generateCode`。                      |
+| 前端      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | [文档](https://docs.opentiny.design/genui-sdk/guide/react/install)                 | 提供 `GenuiRenderer` 与 `GenuiConfigProvider`。                                             |
+| 前端      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | [文档](https://docs.opentiny.design/genui-sdk/guide/angular/install)             | 提供 `GenuiRenderer` 与 `GenuiConfigProvider`。                                         |
+| 物料      | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | Vue | [文档](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) | 基于 [OpenTiny Vue](https://opentiny.design/tiny-vue/) 的组件映射与 Prompt 元数据。 |
+| 物料      | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Vue | [文档](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) | 基于 [Element Plus](https://element-plus.org/) 的组件映射与 Prompt 元数据。         |
+| 物料      | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | [文档](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) | 基于 [Ant Design](https://ant.design/) 的组件映射与 Prompt 元数据。             |
+| 物料      | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | Angular | [文档](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng) | 基于 [OpenTiny NG](https://opentiny.design/tiny-ng/) 的组件映射与 Prompt 元数据。 |
+| 服务端    | [`@opentiny/genui-sdk-server`](packages/server/README.md) | Node.js    | [文档](https://docs.opentiny.design/genui-sdk/guide/server-usage)                      | OpenAI 兼容的 Chat Completions 服务，注入物料元数据并流式输出 SchemaJson。                            |
+| AI 工具   | [`@opentiny/genui-sdk-skill-generator`](packages/skill-generator/README.md) | Node.js | [文档](https://docs.opentiny.design/genui-sdk/components/skill-generator/api) | 根据 `genPrompt` 输出生成 Agent Skill（Cursor / Claude Code 等）。                |
+| AI 工具   | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | [文档](https://docs.opentiny.design/genui-sdk/components/integration-skill/api) | 指导 AI 助手集成 GenUI SDK（Vue / React / Angular / Server）的 Skill。             |
 
 各包之间的配合有两条关键规则：
 
@@ -191,6 +191,8 @@ const systemPrompt = genPrompt('Vue', materialsMeta, customConfig);
 
 将上述路径替换为与你的框架匹配的物料包，并向 `genPrompt` 传入对应框架名（`'Vue'`、`'React'`、`'Angular'`）。
 
+文档：[Vue OpenTiny Vue](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) · [Vue Element Plus](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) · [React Ant Design](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) · [Angular OpenTiny NG](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng)。
+
 ### 服务端 Server
 
 提供 OpenAI 兼容的 Chat Completions 服务与流式 SchemaJson 支持。CLI 只能使用内置默认物料（Vue → OpenTiny Vue，Angular → OpenTiny NG）；当前端使用其他物料包时，须显式传入 `materialsMeta`。
@@ -247,6 +249,8 @@ generateSkillFiles('vue', materialsMeta, {
   formatSkillBody: buildGenuiSchemaSkillBody,
 });
 ```
+
+文档：[Skill Generator API](https://docs.opentiny.design/genui-sdk/components/skill-generator/api) · [集成 Skill](https://docs.opentiny.design/genui-sdk/components/integration-skill/api)。
 
 ## 核心能力
 

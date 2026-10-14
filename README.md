@@ -33,19 +33,19 @@ If you want to use GenUI SDK in your own project, please refer to the
 
 The repository publishes the following packages. All frontend packages share the same schema protocol and differ only in framework and component library.
 
-| Layer         | Package                                                  | Framework   | Description                                                                                                             |
-| ------------- | -------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Core          | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | Agnostic    | Protocol types, prompt generation, streaming Markdown and SchemaJson extraction, delta patching and JSON repair. Required by all others. |
-| Frontend      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue   | `GenuiChat`, `GenuiRenderer`, `GenuiConfigProvider` and `generateCode` for Vue applications.                          |
-| Frontend      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | `GenuiRenderer` and `GenuiConfigProvider` for React applications.                                                 |
-| Frontend      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | `GenuiRenderer` and `GenuiConfigProvider` for Angular applications.                                           |
-| Materials     | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | Vue | Component map + prompt metadata based on [OpenTiny Vue](https://opentiny.design/tiny-vue/).         |
-| Materials     | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Vue | Component map + prompt metadata based on [Element Plus](https://element-plus.org/).                 |
-| Materials     | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | Component map + prompt metadata based on [Ant Design](https://ant.design/).                         |
-| Materials     | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | Angular | Component map + prompt metadata based on [OpenTiny NG](https://opentiny.design/tiny-ng/).       |
-| Server        | [`@opentiny/genui-sdk-server`](packages/server/README.md) | Node.js    | OpenAI‑compatible chat completions service that injects materials metadata and streams SchemaJson content.                  |
-| AI tooling    | [`@opentiny/genui-sdk-skill-generator`](packages/skill-generator/README.md) | Node.js | Generates Agent skills (Cursor / Claude Code, etc.) from `genPrompt` output.                                  |
-| AI tooling    | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | Agent skill that guides AI assistants through GenUI SDK integration (Vue / React / Angular / Server).        |
+| Layer         | Package                                                  | Framework   | Docs                                                                                  | Description                                                                                                             |
+| ------------- | -------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Core          | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | Agnostic    | [Docs](https://docs.opentiny.design/genui-sdk/components/core/api)                     | Protocol types, prompt generation, streaming Markdown and SchemaJson extraction, delta patching and JSON repair. Required by all others. |
+| Frontend      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue   | [Docs](https://docs.opentiny.design/genui-sdk/guide/quick-start)                       | `GenuiChat`, `GenuiRenderer`, `GenuiConfigProvider` and `generateCode` for Vue applications.                          |
+| Frontend      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/guide/react/install)                 | `GenuiRenderer` and `GenuiConfigProvider` for React applications.                                                 |
+| Frontend      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | [Docs](https://docs.opentiny.design/genui-sdk/guide/angular/install)             | `GenuiRenderer` and `GenuiConfigProvider` for Angular applications.                                           |
+| Materials     | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | Vue | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) | Component map + prompt metadata based on [OpenTiny Vue](https://opentiny.design/tiny-vue/).         |
+| Materials     | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Vue | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) | Component map + prompt metadata based on [Element Plus](https://element-plus.org/).                 |
+| Materials     | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) | Component map + prompt metadata based on [Ant Design](https://ant.design/).                         |
+| Materials     | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | Angular | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng) | Component map + prompt metadata based on [OpenTiny NG](https://opentiny.design/tiny-ng/).       |
+| Server        | [`@opentiny/genui-sdk-server`](packages/server/README.md) | Node.js    | [Docs](https://docs.opentiny.design/genui-sdk/guide/server-usage)                      | OpenAI‑compatible chat completions service that injects materials metadata and streams SchemaJson content.                  |
+| AI tooling    | [`@opentiny/genui-sdk-skill-generator`](packages/skill-generator/README.md) | Node.js | [Docs](https://docs.opentiny.design/genui-sdk/components/skill-generator/api) | Generates Agent skills (Cursor / Claude Code, etc.) from `genPrompt` output.                                  |
+| AI tooling    | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | [Docs](https://docs.opentiny.design/genui-sdk/components/integration-skill/api) | Agent skill that guides AI assistants through GenUI SDK integration (Vue / React / Angular / Server).        |
 
 Two rules make the packages fit together:
 
@@ -198,6 +198,8 @@ const systemPrompt = genPrompt('Vue', materialsMeta, customConfig);
 
 Replace the import path with the package matching your framework, and pass the framework name (`'Vue'`, `'React'`, `'Angular'`) to `genPrompt`.
 
+Docs: [Vue OpenTiny Vue](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) · [Vue Element Plus](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) · [React Ant Design](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) · [Angular OpenTiny NG](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng).
+
 ### Server
 
 OpenAI‑compatible chat completions service with streaming SchemaJson support. The CLI can only use the built‑in default materials (Vue → OpenTiny Vue, Angular → OpenTiny NG); when the frontend uses any other materials package, pass `materialsMeta` explicitly.
@@ -254,6 +256,8 @@ generateSkillFiles('vue', materialsMeta, {
   formatSkillBody: buildGenuiSchemaSkillBody,
 });
 ```
+
+Docs: [Skill Generator API](https://docs.opentiny.design/genui-sdk/components/skill-generator/api) · [Integration Skill](https://docs.opentiny.design/genui-sdk/components/integration-skill/api).
 
 ## Core Capabilities
 
