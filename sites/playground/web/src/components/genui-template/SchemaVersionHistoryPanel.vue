@@ -275,7 +275,9 @@ const toggleGroup = (label: string) => {
     font-size: 13px;
     line-height: 20px;
     color: #808080;
-    word-break: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__empty {
