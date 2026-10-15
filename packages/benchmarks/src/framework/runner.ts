@@ -14,6 +14,7 @@ import {
   buildBenchmarkExcelDetailRows,
   comparisonScenarioLabel,
   countsTowardProtocolGate,
+  isPlainPromptVariant,
   resolvePrimaryBenchmarkModelId,
   resolveSamplesDir,
   distributionStats,
@@ -173,10 +174,13 @@ export function buildComparisonByScenario(
         avgTotalMs: n === 0 ? null : successful.reduce((s, r) => s + r.totalMs, 0) / n,
         ...(tpotValues.length ? { avgTpotMs: tpotValues.reduce((s, v) => s + v, 0) / tpotValues.length } : {}),
         avgTotalTokens: n === 0 ? null : successful.reduce((s, r) => s + r.totalTokens, 0) / n,
-        // plain 不计入协议门禁；整组皆 plain 时视为无协议期望（vacuous 1）
+        // plain 不计入协议门禁：整组皆 plain 时视为无协议期望（vacuous 1）；
+        // 存在非 plain 样本但全部 requestFailed 时按 0 计，避免「全失败」却显示 100% 协议通过
         schemaPassRate: (() => {
           const scored = mr.filter(countsTowardProtocolGate);
-          if (scored.length === 0) return 1;
+          if (scored.length === 0) {
+            return mr.some((r) => !isPlainPromptVariant(r)) ? 0 : 1;
+          }
           return scored.filter((r) => r.isSchemaJsonValidAgainstProtocol).length / scored.length;
         })(),
         ...(Object.keys(distributions).length > 0 ? { distributions } : {}),
