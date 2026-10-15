@@ -38,7 +38,13 @@ describe('AntIcon', () => {
     }
   });
 
-  it('未收录的图标名渲染为空', () => {
+  it('name 命中对象原型上的属性时不会抛错', () => {
+    // 映射表是对象字面量，会继承 Object.prototype 上的键；
+    // 这些键必须在查找时排除，否则会把非图标值当作组件渲染。
+    for (const name of ['__proto__', 'constructor', 'toString', 'hasOwnProperty']) {
+      expect(() => renderToStaticMarkup(<AntIcon name={name} />)).not.toThrow();
+      expect(renderToStaticMarkup(<AntIcon name={name} />)).toBe('');
+    }
     expect(renderToStaticMarkup(<AntIcon name="NotARealOutlined" />)).toBe('');
   });
 });
