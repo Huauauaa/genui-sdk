@@ -7,7 +7,7 @@
           "component": "AntBar",
           "description": "Ant Design 条形图（水平方向），通过 data 与 xField/yField 配置数据",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Bar",
             "destructuring": true
           },
@@ -76,7 +76,7 @@
           "component": "AntColumn",
           "description": "Ant Design 柱状图（垂直方向），通过 data 与 xField/yField 配置数据",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Column",
             "destructuring": true
           },
@@ -145,7 +145,7 @@
           "component": "AntLine",
           "description": "Ant Design 折线图，通过 data 与 xField/yField 配置数据，colorField 可区分多系列",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Line",
             "destructuring": true
           },
@@ -207,7 +207,7 @@
           "component": "AntArea",
           "description": "Ant Design 面积图，通过 data 与 xField/yField 配置数据，stack 可开启堆叠",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Area",
             "destructuring": true
           },
@@ -276,7 +276,7 @@
           "component": "AntRadar",
           "description": "Ant Design 雷达图，通过 data 与 xField/yField 配置数据",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Radar",
             "destructuring": true
           },
@@ -338,7 +338,7 @@
           "component": "AntPie",
           "description": "Ant Design 饼图，通过 data、angleField（数值）与 colorField（分类）配置数据",
           "npm": {
-            "package": "@ant-design/charts",
+            "package": "@ant-design/plots",
             "exportName": "Pie",
             "destructuring": true
           },

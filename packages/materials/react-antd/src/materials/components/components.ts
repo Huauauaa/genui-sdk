@@ -10,7 +10,7 @@ import {
   Switch,
   Table,
 } from 'antd';
-import { Area, Bar, Column, Line, Pie, Radar } from '@ant-design/charts';
+import { Area, Bar, Column, Line, Pie, Radar } from '@ant-design/plots';
 import type { IMaterialsMap } from '@opentiny/genui-sdk-core';
 
 import { AntTabsWrap } from './AntTabsWrap';
