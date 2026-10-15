@@ -16,7 +16,7 @@ GenUI SDK is a full‑stack development toolkit developed by OpenTiny for buildi
 
 **GenUI SDK** is an open‑source solution built by the OpenTiny team around the Generative UI concept, providing integrated capabilities across both frontend and backend.  
 It follows the OpenAI API specification, so you can connect to mainstream LLM providers out of the box.  
-The SDK ships with Vue, React and Angular renderers, and supports custom component libraries, interaction logic, and theming.  
+The SDK ships with Vue, Angular and React renderers, and supports custom component libraries, interaction logic, and theming.  
 Whether you are building an AI chat application from scratch or adding generative UI capabilities into an existing business system, GenUI SDK is designed to be ready‑to‑use yet highly extensible.
 
 ## Try It Now
@@ -37,15 +37,15 @@ The repository publishes the following packages. They share the same schema prot
 | ------------- | -------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Core          | [`@opentiny/genui-sdk-core`](packages/core/README.md)     | Agnostic    | [Docs](https://docs.opentiny.design/genui-sdk/components/core/api)                     | Protocol types, prompt generation, streaming Markdown and SchemaJson extraction, delta patching and JSON repair. Required by most other packages. |
 | Frontend      | [`@opentiny/genui-sdk-vue`](packages/frameworks/vue/README.md) | Vue   | [Docs](https://docs.opentiny.design/genui-sdk/guide/quick-start)                       | `GenuiChat`, `GenuiRenderer`, `GenuiConfigProvider` and `generateCode` for Vue applications.                          |
-| Frontend      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/guide/react/install)                 | `GenuiRenderer` and `GenuiConfigProvider` for React applications.                                                 |
 | Frontend      | [`@opentiny/genui-sdk-angular`](packages/frameworks/angular/README.md) | Angular | [Docs](https://docs.opentiny.design/genui-sdk/guide/angular/install)             | `GenuiRenderer` and `GenuiConfigProvider` for Angular applications.                                           |
+| Frontend      | [`@opentiny/genui-sdk-react`](packages/frameworks/react/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/guide/react/install)                 | `GenuiRenderer` and `GenuiConfigProvider` for React applications.                                                 |
 | Materials     | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | Vue | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) | Component map + prompt metadata based on [OpenTiny Vue](https://opentiny.design/tiny-vue/).         |
 | Materials     | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Vue | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) | Component map + prompt metadata based on [Element Plus](https://element-plus.org/).                 |
-| Materials     | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) | Component map + prompt metadata based on [Ant Design](https://ant.design/).                         |
 | Materials     | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | Angular | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng) | Component map + prompt metadata based on [OpenTiny NG](https://opentiny.design/tiny-ng/).       |
+| Materials     | [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | React | [Docs](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) | Component map + prompt metadata based on [Ant Design](https://ant.design/).                         |
 | Server        | [`@opentiny/genui-sdk-server`](packages/server/README.md) | Node.js    | [Docs](https://docs.opentiny.design/genui-sdk/guide/server-usage)                      | OpenAI‑compatible chat completions service that injects materials metadata and streams SchemaJson content.                  |
 | AI tooling    | [`@opentiny/genui-sdk-skill-generator`](packages/skill-generator/README.md) | Node.js | [Docs](https://docs.opentiny.design/genui-sdk/components/skill-generator/api) | Generates Agent skills (Cursor / Claude Code, etc.) from `genPrompt` output.                                  |
-| AI tooling    | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | [Docs](https://docs.opentiny.design/genui-sdk/components/integration-skill/api) | Agent skill that guides AI assistants through GenUI SDK integration (Vue / React / Angular / Server).        |
+| AI tooling    | [`@opentiny/genui-sdk-integration-skill`](packages/integrate/skill/genui-integration/README.md) | — | [Docs](https://docs.opentiny.design/genui-sdk/components/integration-skill/api) | Agent skill that guides AI assistants through GenUI SDK integration (Vue / Angular / React / Server).        |
 
 Two rules make the packages fit together:
 
@@ -111,30 +111,6 @@ Import by feature through subpath exports to keep bundles small:
 
 Docs: [Quick Start](https://docs.opentiny.design/genui-sdk/guide/quick-start.html) · [GenuiChat](https://docs.opentiny.design/genui-sdk/components/chat) · [GenuiRenderer](https://docs.opentiny.design/genui-sdk/components/renderer) · [generateCode](https://docs.opentiny.design/genui-sdk/components/code-generator).
 
-### React
-
-```bash
-pnpm add @opentiny/genui-sdk-react @opentiny/genui-sdk-materials-react-antd antd
-```
-
-```tsx
-import { GenuiConfigProvider, GenuiRenderer } from '@opentiny/genui-sdk-react';
-import { materials } from '@opentiny/genui-sdk-materials-react-antd/materials';
-import 'antd/dist/reset.css';
-
-export function App({ schemaJson }: { schemaJson: unknown }) {
-  return (
-    <GenuiConfigProvider materials={materials}>
-      <GenuiRenderer content={schemaJson} isJsonComplete />
-    </GenuiConfigProvider>
-  );
-}
-```
-
-Subpath exports: `@opentiny/genui-sdk-react/renderer` and `@opentiny/genui-sdk-react/config-provider`.
-
-Docs: [Install](https://docs.opentiny.design/genui-sdk/guide/react/install) · [GenuiRenderer](https://docs.opentiny.design/genui-sdk/components/react/renderer).
-
 ### Angular
 
 ```bash
@@ -169,6 +145,30 @@ export class AppComponent {
 
 Docs: [Install](https://docs.opentiny.design/genui-sdk/guide/angular/install) · [GenuiRenderer](https://docs.opentiny.design/genui-sdk/components/angular/renderer).
 
+### React
+
+```bash
+pnpm add @opentiny/genui-sdk-react @opentiny/genui-sdk-materials-react-antd antd
+```
+
+```tsx
+import { GenuiConfigProvider, GenuiRenderer } from '@opentiny/genui-sdk-react';
+import { materials } from '@opentiny/genui-sdk-materials-react-antd/materials';
+import 'antd/dist/reset.css';
+
+export function App({ schemaJson }: { schemaJson: unknown }) {
+  return (
+    <GenuiConfigProvider materials={materials}>
+      <GenuiRenderer content={schemaJson} isJsonComplete />
+    </GenuiConfigProvider>
+  );
+}
+```
+
+Subpath exports: `@opentiny/genui-sdk-react/renderer` and `@opentiny/genui-sdk-react/config-provider`.
+
+Docs: [Install](https://docs.opentiny.design/genui-sdk/guide/react/install) · [GenuiRenderer](https://docs.opentiny.design/genui-sdk/components/react/renderer).
+
 ### Materials
 
 A materials package provides two things:
@@ -180,8 +180,8 @@ A materials package provides two things:
 | --------------------------------------------------- | ------------- | ----------------- | ------------------------------------------------------------------------------------ |
 | [`@opentiny/genui-sdk-materials-vue-opentiny-vue`](packages/materials/vue-opentiny-vue/README.md) | OpenTiny Vue | `TinyCard` | `materials` / `miniMaterials` / `plusMaterials`, `materialsMeta` / `miniMaterialsMeta` / `plusMaterialsMeta` |
 | [`@opentiny/genui-sdk-materials-vue-element-plus`](packages/materials/vue-element-plus/README.md) | Element Plus | `ElCard` | `materials`, `materialsMeta` |
-| [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | Ant Design | `AntCard` | `materials`, `materialsMeta` |
 | [`@opentiny/genui-sdk-materials-angular-opentiny-ng`](packages/materials/angular-opentiny-ng/README.md) | OpenTiny NG | `TiCard` | `materials`, `materialsMeta` |
+| [`@opentiny/genui-sdk-materials-react-antd`](packages/materials/react-antd/README.md) | Ant Design | `AntCard` | `materials`, `materialsMeta` |
 
 The Vue OpenTiny materials ship in three tiers — `mini` (forms/info blocks), standard `materials` (data display, charts) and `plus` (full business pages: tree, dialog, timeline…). Both the frontend map and the server metadata have a matching tier.
 
@@ -196,9 +196,9 @@ import { materialsMeta } from '@opentiny/genui-sdk-materials-vue-opentiny-vue/me
 const systemPrompt = genPrompt('Vue', materialsMeta, customConfig);
 ```
 
-Replace the import path with the package matching your framework, and pass the framework name (`'Vue'`, `'React'`, `'Angular'`) to `genPrompt`.
+Replace the import path with the package matching your framework, and pass the framework name (`'Vue'`, `'Angular'`, `'React'`) to `genPrompt`.
 
-Docs: [Vue OpenTiny Vue](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) · [Vue Element Plus](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) · [React Ant Design](https://docs.opentiny.design/genui-sdk/components/materials/react-antd) · [Angular OpenTiny NG](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng).
+Docs: [Vue OpenTiny Vue](https://docs.opentiny.design/genui-sdk/components/materials/vue-opentiny-vue) · [Vue Element Plus](https://docs.opentiny.design/genui-sdk/components/materials/vue-element-plus) · [Angular OpenTiny NG](https://docs.opentiny.design/genui-sdk/components/materials/angular-opentiny-ng) · [React Ant Design](https://docs.opentiny.design/genui-sdk/components/materials/react-antd).
 
 ### Server
 
@@ -269,7 +269,7 @@ GenUI SDK is designed to balance **out‑of‑the‑box experience** with **deep
 | Theme customization        | Supports theme switching, dark mode, and token‑based theming to adapt to different brand and product style guides.                                 |
 | Custom components          | Extend the generative UI component library and incorporate business components into a unified generative interaction system.       |
 | Custom interactions        | Allows flexible configuration of multi‑turn conversation flows and custom commands/actions (e.g., open page, fetch data, generate forms) to fit complex scenarios. |
-| Multi‑stack support        | Bundles Vue, React and Angular renderers so you can adopt GenUI SDK in new projects or integrate it progressively into existing frontends.          |
+| Multi‑stack support        | Bundles Vue, Angular and React renderers so you can adopt GenUI SDK in new projects or integrate it progressively into existing frontends.          |
 | Advanced capabilities      | Offers sample projects and best‑practice templates. Combined with server‑side features, you can implement message orchestration, tool invocation, access control, and more. |
 
 For more details, see the GenUI SDK [feature examples](https://docs.opentiny.design/genui-sdk/examples/renderer/custom-actions.html) for complete explanations and practical guides.
