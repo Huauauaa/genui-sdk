@@ -73,7 +73,7 @@ function multiHbarRows(categories, series, maxVal, suffix) {
           const v = typeof raw === 'number' && Number.isFinite(raw) ? raw : null;
           const pct = v == null ? 0 : Math.max(0, Math.min(100, (v / max) * 100));
           const tone = s.barClass || `m${si % 5}`;
-          return `<div class="dhbar-row"><span class="tag m${si % 5}" title="${esc(s.label)}">${esc(s.short || String(si + 1))}</span><div class="hbar-track"><div class="hbar-fill ${tone}" style="width:${pct.toFixed(1)}%"></div></div><span class="hbar-value">${v == null ? '—' : `${esc(String(v))}${esc(suffix)}`}</span></div>`;
+          return `<div class="dhbar-row"><span class="tag m${si % 5}" title="${esc(s.label)}">${esc(s.label || String(si + 1))}</span><div class="hbar-track"><div class="hbar-fill ${tone}" style="width:${pct.toFixed(1)}%"></div></div><span class="hbar-value">${v == null ? '—' : `${esc(String(v))}${esc(suffix)}`}</span></div>`;
         })
         .join('\n');
       return `<div class="dhbar">
@@ -82,17 +82,6 @@ function multiHbarRows(categories, series, maxVal, suffix) {
 </div>`;
     })
     .join('\n');
-}
-
-function shortModel(name) {
-  const s = String(name || '');
-  if (s.length <= 14) return s;
-  const parts = s.split(/[-_/]/).filter(Boolean);
-  if (parts.length >= 2) {
-    const tail = parts.slice(-2).join('-');
-    return tail.length <= 14 ? tail : tail.slice(0, 14);
-  }
-  return s.slice(0, 14);
 }
 
 function stackRows(categories, stacks) {
@@ -380,7 +369,6 @@ function renderHtml(data) {
     modelsForCompare.length > 0
       ? modelsForCompare.map((model, i) => ({
           label: model,
-          short: shortModel(model),
           barClass: `m${i % 5}`,
           values: scenarioNames.map((sc) => {
             const s = byScenarioModel.get(`${sc}::${model}`);
@@ -392,7 +380,6 @@ function renderHtml(data) {
     modelsForCompare.length > 0
       ? modelsForCompare.map((model, i) => ({
           label: model,
-          short: shortModel(model),
           barClass: `m${i % 5}`,
           values: scenarioNames.map((sc) => {
             const s = byScenarioModel.get(`${sc}::${model}`);
@@ -404,7 +391,6 @@ function renderHtml(data) {
     modelsForCompare.length > 0
       ? modelsForCompare.map((model, i) => ({
           label: model,
-          short: shortModel(model),
           barClass: `m${i % 5}`,
           values: scenarioNames.map((sc) => {
             const s = byScenarioModel.get(`${sc}::${model}`);
@@ -961,7 +947,7 @@ function renderHtml(data) {
     }
     .dhbar-row {
       display: grid;
-      grid-template-columns: 72px 1fr 52px;
+      grid-template-columns: minmax(96px, 140px) 1fr 52px;
       gap: 6px;
       align-items: center;
       margin-bottom: 3px;
