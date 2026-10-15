@@ -18,6 +18,9 @@ import {
   resolveSamplesDir,
   resolveStreamTextUsage,
   benchStreamTextAbortSignal,
+  combineAbortSignals,
+  throwIfAborted,
+  abortableSleep,
   slugifyModelForFilename,
   buildBenchmarkRunMetadata,
 } from './utils';
@@ -61,7 +64,7 @@ class SlidingWindowRateLimiter {
     private readonly windowMs: number,
   ) {}
 
-  async waitTurn(): Promise<number> {
+  async waitTurn(signal?: AbortSignal): Promise<number> {
     const previous = this.queue;
     let release!: () => void;
     this.queue = new Promise((resolve) => {
@@ -80,7 +83,7 @@ class SlidingWindowRateLimiter {
       const oldest = this.starts[0]!;
       const waitMs = Math.max(0, oldest + this.windowMs - now);
       if (waitMs > 0) {
-        await sleep(waitMs);
+        await abortableSleep(waitMs, signal);
       }
       const afterWait = Date.now();
       this.prune(afterWait);
@@ -96,10 +99,6 @@ class SlidingWindowRateLimiter {
       this.starts.shift();
     }
   }
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function isRateLimitError(message: string) {
@@ -150,6 +149,7 @@ async function runSampleAttempt(
   streamTimeoutMs: number | undefined,
   wrapperComponent: string,
   protocol: BenchProtocol,
+  externalSignal?: AbortSignal,
 ): Promise<SampleAttemptResult> {
   const start = Date.now();
   let firstTokenAt = 0;
@@ -162,7 +162,10 @@ async function runSampleAttempt(
   let errorMessage: string | undefined;
 
   try {
-    const abortSignal = benchStreamTextAbortSignal(streamTimeoutMs);
+    const abortSignal = combineAbortSignals([
+      benchStreamTextAbortSignal(streamTimeoutMs),
+      externalSignal,
+    ]);
     const streamResult = streamText({
       model: modelInstance,
       temperature: 0,
@@ -219,6 +222,7 @@ async function runSampleAttempt(
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : String(error);
   }
+  throwIfAborted(externalSignal);
 
   const totalMs = Date.now() - start;
   const firstChunkMs = firstTokenAt ? firstTokenAt - start : undefined;
@@ -253,6 +257,7 @@ async function runSampleAttemptWithRetry(
   protocol: BenchProtocol,
   retry: RetryConfig,
   rateLimiter?: SlidingWindowRateLimiter,
+  signal?: AbortSignal,
 ): Promise<SampleAttemptResult & RetryMeta> {
   let retryWaitMs = 0;
   let rateLimitQueueWaitMs = 0;
@@ -260,8 +265,9 @@ async function runSampleAttemptWithRetry(
   let rateLimited = false;
 
   for (let attempt = 1; attempt <= retry.maxAttempts; attempt++) {
+    throwIfAborted(signal);
     if (rateLimiter) {
-      const waitedMs = await rateLimiter.waitTurn();
+      const waitedMs = await rateLimiter.waitTurn(signal);
       rateLimitQueueWaitMs += waitedMs;
       if (waitedMs > 0) {
         console.log(`[bench][rate-limit] model=${model}, attempt=${attempt}, waited=${waitedMs}ms`);
@@ -274,6 +280,7 @@ async function runSampleAttemptWithRetry(
       streamTimeoutMs,
       wrapperComponent,
       protocol,
+      signal,
     );
     if (!result.errorMessage || attempt >= retry.maxAttempts || !isRetryableError(result.errorMessage)) {
       return {
@@ -293,7 +300,7 @@ async function runSampleAttemptWithRetry(
     console.log(
       `[bench][retry] model=${model}, scenario=${sampleCase.id}, attempt=${attempt}/${retry.maxAttempts}, wait=${waitMs}ms, reason=${result.errorMessage}`,
     );
-    await sleep(waitMs);
+    await abortableSleep(waitMs, signal);
   }
 
   throw new Error('unreachable retry loop state');
@@ -316,6 +323,7 @@ async function generateSingleSample(
   protocol: BenchProtocol,
   retry: RetryConfig,
   rateLimiter?: SlidingWindowRateLimiter,
+  signal?: AbortSignal,
 ): Promise<LlmBenchmarkSample> {
   const result = await runSampleAttemptWithRetry(
     modelInstance,
@@ -327,6 +335,7 @@ async function generateSingleSample(
     protocol,
     retry,
     rateLimiter,
+    signal,
   );
 
   return {
@@ -366,7 +375,7 @@ async function generateSingleSample(
 /**
  * 批量生成样本并落盘。
  */
-export async function generateSamples(options: LlmBenchmarkRunOptions) {
+export async function generateSamples(options: LlmBenchmarkRunOptions, signal?: AbortSignal) {
   (globalThis as any).AI_SDK_LOG_WARNINGS = false;
   const protocol = protocolFromOptions(options);
   const framework = options.framework ?? 'Vue';
@@ -491,6 +500,7 @@ export async function generateSamples(options: LlmBenchmarkRunOptions) {
 
   async function worker(workerNo: number) {
     while (true) {
+      throwIfAborted(signal);
       const jobIdx = nextJobIdx;
       nextJobIdx++;
       if (jobIdx >= jobs.length) {
@@ -538,6 +548,7 @@ export async function generateSamples(options: LlmBenchmarkRunOptions) {
         protocol,
         retry,
         rateLimiter,
+        signal,
       );
 
       fs.mkdirSync(path.dirname(sampleFile), { recursive: true });

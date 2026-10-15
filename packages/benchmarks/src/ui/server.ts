@@ -198,6 +198,7 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
   let lastError: string | undefined;
   let lastSamplesDir: string | undefined;
   let runPromise: Promise<void> | null = null;
+  let runAbortController: AbortController | null = null;
 
   const original = {
     log: console.log.bind(console),
@@ -285,7 +286,7 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
     return true;
   };
 
-  const runBenchmark = async (form: BenchUiFormPayload, reserved = false) => {
+  const runBenchmark = async (form: BenchUiFormPayload, reserved = false, signal?: AbortSignal) => {
     if (!reserved && !reserveRun()) {
       throw new Error('A benchmark run is already in progress');
     }
@@ -295,14 +296,17 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
     const options: LlmBenchmarkRunOptions = applyFormPayload(resolveRunOptions(), form);
 
     try {
-      const gen = await generateSamples(options);
+      const gen = await generateSamples(options, signal);
       lastSamplesDir = gen.samplesDir;
-      await runReport({
-        ...options,
-        benchmarkStartedAtMs,
-        samplesDir: gen.samplesDir,
-        runMetadata: gen.runMetadata,
-      });
+      await runReport(
+        {
+          ...options,
+          benchmarkStartedAtMs,
+          samplesDir: gen.samplesDir,
+          runMetadata: gen.runMetadata,
+        },
+        signal,
+      );
       runState = 'done';
       const links = buildArtifactLinks(gen.samplesDir);
       broadcast('log', [
@@ -310,6 +314,13 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
           (links.conclusions ? ' — open 查看结论 in the status bar.' : ''),
       ]);
     } catch (err) {
+      if (signal?.aborted) {
+        // 用户主动停止：回收为 idle，不视为失败。
+        runState = 'idle';
+        lastError = undefined;
+        broadcast('log', ['[bench-ui] Stopped by user. Current run cancelled.']);
+        return;
+      }
       runState = 'error';
       lastError = err instanceof Error ? err.message : String(err);
       broadcast('error', [`[bench-ui] Failed: ${lastError}`]);
@@ -428,9 +439,27 @@ export async function startBenchUi(preferredPort = 3847): Promise<void> {
           return;
         }
         sendJson(res, 202, { ok: true, message: 'Benchmark started' });
-        runPromise = runBenchmark(form, true).catch(() => {
-          /* error already logged / state set */
-        });
+        const controller = new AbortController();
+        runAbortController = controller;
+        runPromise = runBenchmark(form, true, controller.signal)
+          .catch(() => {
+            /* error already logged / state set */
+          })
+          .finally(() => {
+            if (runAbortController === controller) {
+              runAbortController = null;
+            }
+          });
+        return;
+      }
+
+      if (req.method === 'POST' && pathname === '/api/stop') {
+        if (runState !== 'running' || !runAbortController) {
+          sendJson(res, 409, { ok: false, error: 'No benchmark in progress' });
+          return;
+        }
+        runAbortController.abort();
+        sendJson(res, 200, { ok: true, message: 'Stopping benchmark…' });
         return;
       }
 

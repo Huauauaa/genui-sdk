@@ -14,6 +14,8 @@ import {
   resolveSamplesDir,
   resolveStreamTextUsage,
   benchStreamTextAbortSignal,
+  combineAbortSignals,
+  throwIfAborted,
   buildBenchmarkReportMetadata,
   classifyBenchmarkFailure,
   buildBenchmarkHealthSummary,
@@ -60,7 +62,11 @@ export function shouldJudgeSample(sample: LlmBenchmarkSample, options?: LlmBench
  * `judge_invalid_json` / `judge_missing_score` / `judge_invalid_score` /
  * `judge_stream_error` / `judge_request_failed`。
  */
-async function judgeOneSample(sample: LlmBenchmarkSample, options: LlmBenchmarkRunOptions): Promise<LlmJudgeResult> {
+async function judgeOneSample(
+  sample: LlmBenchmarkSample,
+  options: LlmBenchmarkRunOptions,
+  signal?: AbortSignal,
+): Promise<LlmJudgeResult> {
   const judgeCfg = options.llmJudge;
   const modelId = judgeCfg?.model || resolvePrimaryBenchmarkModelId(options);
   const protocol = sample.protocol ?? protocolFromOptions(options);
@@ -83,7 +89,10 @@ async function judgeOneSample(sample: LlmBenchmarkSample, options: LlmBenchmarkR
       ? sample.messages.map((msg) => `[${msg.role}] ${msg.content}`).join('\n')
       : ((sample as LlmBenchmarkSample & { prompt?: string }).prompt ?? '');
     const modelInstance = await resolveAiSdkModelForBench(modelId);
-    const abortSignal = benchStreamTextAbortSignal(options.streamTimeoutMs);
+    const abortSignal = combineAbortSignals([
+      benchStreamTextAbortSignal(options.streamTimeoutMs),
+      signal,
+    ]);
     const streamResult = streamText({
       model: modelInstance,
       temperature: 0,
@@ -152,6 +161,7 @@ async function judgeOneSample(sample: LlmBenchmarkSample, options: LlmBenchmarkR
       ...usage,
     };
   } catch (error) {
+    throwIfAborted(signal);
     const detail = error instanceof Error ? error.message : String(error);
     if (isJudgeTimeoutError(error) || isJudgeTimeoutError(detail)) {
       return { error: `judge_timeout: ${detail}` };
@@ -234,7 +244,7 @@ function toReportItem(
  * @returns `{ results, gateFailed }`：results 为输出打印与写盘后的结果集；
  *   gateFailed 为 `failOnProtocol` 门槛失败标记（由调用方决定退出码，避免库函数副作用）。
  */
-export async function runReport(options: LlmBenchmarkRunOptions) {
+export async function runReport(options: LlmBenchmarkRunOptions, signal?: AbortSignal) {
   const baseDir = resolveSamplesDir(options.samplesDir);
   if (!fs.existsSync(baseDir)) {
     throw new Error(`Samples directory not found: ${baseDir}`);
@@ -302,6 +312,7 @@ export async function runReport(options: LlmBenchmarkRunOptions) {
     let cursor = 0;
     async function worker() {
       while (true) {
+        throwIfAborted(signal);
         const index = cursor++;
         if (index >= parsedSamples.length) return;
         const sample = parsedSamples[index];
@@ -317,7 +328,7 @@ export async function runReport(options: LlmBenchmarkRunOptions) {
           );
           continue;
         }
-        const judged = await judgeOneSample(sample, options);
+        const judged = await judgeOneSample(sample, options, signal);
         judgeResults[index] = judged;
         if (judged.error) {
           console.log(

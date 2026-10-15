@@ -615,6 +615,12 @@
       color: var(--muted);
       border: 1px solid var(--line);
     }
+    .btn-danger {
+      background: transparent;
+      color: #ff8a8a;
+      border: 1px solid rgba(239, 107, 107, 0.5);
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(239, 107, 107, 0.12); }
 
     .error-banner {
       display: none;
@@ -667,6 +673,7 @@
       <div class="dock-summary" id="dockSummary">—</div>
       <div class="dock-actions">
         <button type="button" class="btn btn-secondary" id="btnShutdown">关闭服务</button>
+        <button type="button" class="btn btn-danger" id="btnStop" hidden>停止</button>
         <button type="button" class="btn btn-primary" id="btnRun">启动测试</button>
       </div>
     </div>
@@ -853,6 +860,11 @@
       label.textContent = map[runState] || runState;
       const btn = $('btnRun');
       if (btn) btn.disabled = runState === 'running';
+      const stopBtn = $('btnStop');
+      if (stopBtn) stopBtn.hidden = runState !== 'running';
+      if (runState === 'idle' && progress.phase !== 'idle') {
+        resetProgress();
+      }
       if (runState === 'running' && progress.phase === 'idle') {
         renderProgress();
       }
@@ -1439,6 +1451,7 @@
 
       $('clearLog')?.addEventListener('click', () => { const p = $('log'); if (p) p.innerHTML = ''; });
       $('btnRun').onclick = startRun;
+      $('btnStop').onclick = stopRun;
       $('btnShutdown').onclick = async () => {
         if (!confirm('关闭 UI 服务并退出进程？')) return;
         await fetch('/api/shutdown', { method: 'POST' });
@@ -1482,6 +1495,27 @@
     }
 
     let lastSeenError;
+
+    async function stopRun() {
+      const btn = $('btnStop');
+      if (btn) btn.disabled = true;
+      appendLog('[ui] Requesting stop…');
+      try {
+        const res = await fetch('/api/stop', { method: 'POST' });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = data.error || `HTTP ${res.status}`;
+          appendLog('[ui] Stop failed: ' + msg);
+          if (btn) btn.disabled = false;
+          return;
+        }
+        appendLog('[ui] Stop accepted — waiting for server to cancel…');
+      } catch (err) {
+        const msg = String(err && err.message ? err.message : err);
+        appendLog('[ui] Stop request failed: ' + msg);
+        if (btn) btn.disabled = false;
+      }
+    }
 
     async function startRun() {
       const payload = collectPayload();
