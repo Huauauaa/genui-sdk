@@ -15,7 +15,6 @@ export const materialsMeta: IMaterialsMeta = {
   whiteList,
   examples: filterExamples(['form', 'info', 'table']),
   rules: [
-    '生成数据表格（ElTable）时，第一列应为序号列：使用 ElTableColumn 组件，label="序号"、width 约 60，并通过 formatter 函数 `(row, column, cellValue, index) => index + 1` 返回行号；不要依赖 props.type="index"，因为流式渲染下该类型可能不立即显示序号。',
     '表单控件（ElInput、ElSelect、ElDatePicker、ElRadioGroup、ElSwitch、ElCheckbox 等）的 modelValue 必须双向绑定到 state：props 写成 {"type":"JSExpression","model":true,"value":"this.state.xxx"}，并在根级 state 中先声明 xxx 的初始值；禁止写成静态值，否则输入/选择后无法回显。ElSelect 下的每个 ElOption 必须同时配置 label 和 value。',
   ],
 };
